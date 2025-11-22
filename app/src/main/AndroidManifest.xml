@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- added for notifs -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MCO2_FlorPal"
+        android:largeHeap="true">
+
+        <!-- pwedeng idelete muna if not working properly
+        <activity
+            android:name=".LogoActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MCO2_FlorPal">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity> until here -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MCO2_FlorPal">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- added in nov 3 version -->
+        <activity
+            android:name=".ViewPlantListActivity"
+            android:theme="@style/Theme.MCO2_FlorPal"
+            />
+        <!-- added in nov 6 version -->
+        <activity
+            android:name=".ViewPlantDetailsActivity"
+            android:theme="@style/Theme.MCO2_FlorPal"
+            />
+
+        <activity
+            android:name=".AddPlantActivity"
+            android:theme="@style/Theme.MCO2_FlorPal"
+            />
+        <activity
+            android:name=".EditPlantActivity"
+            android:theme="@style/Theme.MCO2_FlorPal"
+            />
+        <receiver
+            android:name=".FlorPalAlarmReceiver"
+            android:exported="false" />
+
+    </application>
+</manifest>

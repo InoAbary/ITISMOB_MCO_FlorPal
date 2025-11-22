@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "202916741899",
+    "project_id": "mco-florpal",
+    "storage_bucket": "mco-florpal.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202916741899:android:e5f6e5667ae864ad65180e",
+        "android_client_info": {
+          "package_name": "com.mobdeve.s17.abary.inorafael.mco2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbceup0VjZKTIQplKzTytUqfv_5e2wPj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

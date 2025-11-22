@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageButton
+        android:id="@+id/editPlantBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/round_icon_bg"
+        android:backgroundTint="#070000"
+        android:elevation="10dp"
+        android:scaleType="centerInside"
+        android:tint="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/deletePlantBtn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_edit" />
+
+    <ImageButton
+        android:id="@+id/deletePlantBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/round_icon_bg"
+        android:backgroundTint="#070000"
+        android:elevation="10dp"
+        android:scaleType="centerInside"
+        android:tint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_delete" />
+
+    <ImageView
+        android:id="@+id/plantImg"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deletePlantBtn"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/plantNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/plantImg" />
+
+    <View
+        android:id="@+id/dividerLineVw"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginVertical="8dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginEnd="140dp"
+        android:background="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/plantNameTv" />
+
+    <TextView
+        android:id="@+id/plantTypeLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="12dp"
+        android:text="Plant Type:"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerLineVw" />
+
+    <TextView
+        android:id="@+id/plantTypeTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="Rose"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/plantTypeLabelTv"
+        app:layout_constraintTop_toBottomOf="@+id/dividerLineVw" />
+
+    <TextView
+        android:id="@+id/dateCreatedLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="40dp"
+        android:text="Date Created:"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/plantTypeLabelTv" />
+
+    <TextView
+        android:id="@+id/dateCreatedTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:text="Text"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/dateCreatedLabelTv"
+        app:layout_constraintTop_toBottomOf="@+id/plantTypeLabelTv" />
+
+    <TextView
+        android:id="@+id/wateringAmountLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="40dp"
+        android:text="Watering Amount:"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateCreatedLabelTv" />
+
+    <TextView
+        android:id="@+id/wateringAmountTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:text="Text"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/wateringAmountLabelTv"
+        app:layout_constraintTop_toBottomOf="@+id/dateCreatedLabelTv" />
+
+    <TextView
+        android:id="@+id/lastWateredLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="40dp"
+        android:text="Last Watered:"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wateringAmountLabelTv" />
+
+    <TextView
+        android:id="@+id/lastWateredTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:text="Text"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/lastWateredLabelTv"
+        app:layout_constraintTop_toBottomOf="@+id/wateringAmountLabelTv" />
+
+    <TextView
+        android:id="@+id/nextWateringSchedLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="40dp"
+        android:text="Next Watering Schedule"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastWateredLabelTv" />
+
+    <TextView
+        android:id="@+id/nextWateringSchedTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:text="Text"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/nextWateringSchedLabelTv"
+        app:layout_constraintTop_toBottomOf="@+id/lastWateredLabelTv" />
+
+    <TextView
+        android:id="@+id/locationLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="40dp"
+        android:text="Location:"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nextWateringSchedLabelTv" />
+
+    <TextView
+        android:id="@+id/locationTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:text="Text"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/locationLabelTv"
+        app:layout_constraintTop_toBottomOf="@+id/nextWateringSchedLabelTv" />
+
+    <TextView
+        android:id="@+id/fruitProductionLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="40dp"
+        android:text="Fruit Production Rate:"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationLabelTv" />
+
+    <TextView
+        android:id="@+id/fruitProductionTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:text="Text"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/fruitProductionLabelTv"
+        app:layout_constraintTop_toBottomOf="@+id/locationLabelTv" />
+
+    <TextView
+        android:id="@+id/flowerColorLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="40dp"
+        android:text="Flower Color:"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fruitProductionLabelTv" />
+
+    <TextView
+        android:id="@+id/flowerColorTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:text="Text"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/flowerColorLabelTv"
+        app:layout_constraintTop_toBottomOf="@+id/fruitProductionLabelTv" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/backBtn"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#fee6b0"
+        android:gravity="center"
+        android:text="Back"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:cornerRadius="20dp"
+        app:icon="@drawable/ic_back"
+        app:iconGravity="textStart"
+        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/flowerColorLabelTv" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/waterBtn"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="224dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#72c5ee"
+        android:gravity="center"
+        android:text="Water"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:cornerRadius="20dp"
+        app:icon="@drawable/ic_water"
+        app:iconGravity="textStart"
+        app:iconSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

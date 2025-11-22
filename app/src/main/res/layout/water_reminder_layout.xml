@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/reminderContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/reminder_border_bg">
+
+    <!-- Plant Image -->
+    <ImageView
+        android:id="@+id/ivPlantPhoto"
+        android:layout_width="60dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/round_image_bg"
+        android:clipToOutline="true"
+        android:contentDescription="Plant image"
+        android:scaleType="centerCrop" />
+
+    <!-- Plant Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvPlantNickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sunny"
+            android:textColor="#205935"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPlantName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sunflower"
+            android:textColor="#040000"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Due today!"
+            android:textColor="#000000"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Edit and Water Buttons -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginEnd="8dp">
+
+        <Button
+            android:id="@+id/btnWater"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/button_border"
+            android:backgroundTint="#FFFFFF"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:text="Water"
+            android:textColor="#577AE0"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnEdit"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/button_border"
+            android:backgroundTint="#FFFFFF"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:text="Edit"
+            android:textColor="#4CAF50"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+    <!-- Heart Icon at the far right -->
+    <TextView
+        android:id="@+id/tvHeart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="♡"
+        android:textSize="22sp"
+        android:layout_marginStart="4dp"
+        android:textColor="#FF0000" />
+
+</LinearLayout>

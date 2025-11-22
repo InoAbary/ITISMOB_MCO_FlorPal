@@ -1,0 +1,6 @@
+package com.mobdeve.s17.abary.inorafael.mco2
+
+enum class FlorPalIntentKeys {
+    PLANT_NICKNAME_KEY, PLANT_NAME_KEY, PLANT_PHOTO_KEY, FRUIT_PRODUCTION_RATE_KEY,
+    FLOWER_COLOR_KEY, DATE_CREATED_KEY, WATERED_DATE_KEY
+}

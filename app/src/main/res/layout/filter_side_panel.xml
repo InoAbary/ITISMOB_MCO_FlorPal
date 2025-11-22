@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="40dp"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/sortByTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sort By:"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sortRadioGroup">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sortAlphAscRb"
+            android:text="Alphabetical Ascending"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sortAlphDescRb"
+            android:text="Alphabetical Descending"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sortLastWateredRb"
+            android:text="Last Watered"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/filterByTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filter By:"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <CheckBox
+        android:id="@+id/filterWaterTodayCb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Watering Today"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+    <CheckBox
+        android:id="@+id/filterWaterWeekCb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Watering This Week"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+    <CheckBox
+        android:id="@+id/filterPastDueCb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Past Due Date"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+    <CheckBox
+        android:id="@+id/filterFavsCb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Favorites"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/clearBtn"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginVertical="15dp"
+            android:layout_weight="1"
+            android:text="Clear"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:backgroundTint="#999789"
+            android:textSize="15sp"
+            app:cornerRadius="20dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/applyBtn"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginVertical="15dp"
+            android:layout_weight="1"
+            android:text="Apply"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:backgroundTint="#1d5d2d"
+            android:textSize="15sp"
+            app:cornerRadius="20dp" />
+    </LinearLayout>
+
+</LinearLayout>
+

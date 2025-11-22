@@ -63,6 +63,8 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.lifecycle)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

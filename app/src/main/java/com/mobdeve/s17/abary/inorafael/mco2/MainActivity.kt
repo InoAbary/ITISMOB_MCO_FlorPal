@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
         // --- Second RecyclerView: Watering Reminders (Vertical)
         rvReminders = mainBinding.remindersRecyclerView
-        reminderAdapter = WaterReminderAdapter(reminderList, plantList, enableClick = false, this) // edited nov 6
+        reminderAdapter = WaterReminderAdapter(reminderList, plantList, enableClick = false, this) {loadPlants()} // edited nov 6
         rvReminders.adapter = reminderAdapter
         rvReminders.layoutManager = LinearLayoutManager(this)
 

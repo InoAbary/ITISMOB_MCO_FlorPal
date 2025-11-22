@@ -42,7 +42,7 @@ class ViewPlantListActivity: ComponentActivity (){
         rvReminders = binding.plantsRecyclerView
         // reminderAdapter = WaterReminderAdapter(reminderList)
         // edited nov 5
-        reminderAdapter = WaterReminderAdapter(reminderList, plantList, enableClick = true, this)
+        reminderAdapter = WaterReminderAdapter(reminderList, plantList, enableClick = true, this) {loadPlants()}
         rvReminders.adapter = reminderAdapter
         rvReminders.layoutManager = LinearLayoutManager(this)
 

@@ -1,26 +1,49 @@
 package com.mobdeve.s17.abary.inorafael.mco2
 
+import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mobdeve.s17.abary.inorafael.mco2.databinding.AddPlantBinding
 import java.time.LocalDate
 import kotlin.text.isBlank
 import kotlin.toString
 import androidx.core.content.edit
+
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class AddPlantActivity : AppCompatActivity() {
 
     private lateinit var binding: AddPlantBinding
+    private var imageCapture: ImageCapture? = null
+
+//    private val requestCameraPermission =
+//        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+//            if (granted) startCamera()
+//            else Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show()
+//        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = AddPlantBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
 
 
 
@@ -32,6 +55,17 @@ class AddPlantActivity : AppCompatActivity() {
             DatePicker { formatted ->
                 binding.lastWateredDateInput.setText(formatted)
             }.show(supportFragmentManager, "lastWateredDate")
+        }
+
+        binding.defaultPlantImg.setOnClickListener {
+
+//            if (hasCameraPermission()) {
+//                startCamera()
+//            } else {
+//                requestCameraPermission.launch(Manifest.permission.CAMERA)
+//            }
+
+
         }
 
         binding.nextWateringDateInput.setOnClickListener {
@@ -119,4 +153,76 @@ class AddPlantActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun hasCameraPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this, Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+//    private fun startCamera() {
+//        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+//
+//        cameraProviderFuture.addListener({
+//            val cameraProvider = cameraProviderFuture.get()
+//
+//            val preview = Preview.Builder().build().also {
+//                it.setSurfaceProvider(previewView.surfaceProvider)
+//            }
+//
+//            imageCapture = ImageCapture.Builder()
+//                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+//                .build()
+//
+//            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//
+//            cameraProvider.unbindAll()
+//            cameraProvider.bindToLifecycle(
+//                this,
+//                cameraSelector,
+//                preview,
+//                imageCapture
+//            )
+//        }, ContextCompat.getMainExecutor(this))
+//    }
+//
+//    private fun takePhoto() {
+//        val capture = imageCapture ?: return
+//
+//        val name = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
+//            .format(System.currentTimeMillis())
+//
+//        // Save to MediaStore (Gallery)
+//        val contentValues = ContentValues().apply {
+//            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+//            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+//            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-App")
+//        }
+//
+//        val outputOptions = ImageCapture.OutputFileOptions
+//            .Builder(contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+//            .build()
+//
+//        capture.takePicture(
+//            outputOptions,
+//            ContextCompat.getMainExecutor(this),
+//            object : ImageCapture.OnImageSavedCallback {
+//                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+//                    Toast.makeText(
+//                        this@AddPlantActivity,
+//                        "Saved to Gallery!",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//
+//                override fun onError(exception: ImageCaptureException) {
+//                    Toast.makeText(
+//                        this@AddPlantActivity,
+//                        "Error: ${exception.message}",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//            }
+//        )
+//    }
 }

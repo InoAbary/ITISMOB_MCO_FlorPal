@@ -9,7 +9,8 @@ class WaterReminderAdapter(
     private var data: ArrayList<WaterReminderModel>,
     private val fullPlantList: ArrayList<PlantModel>,// added nov 5, to pass the plant model for viewplantdetails
     private val enableClick: Boolean = true, //added nov 5, to enable and disable click (can only access viewplantdetails on viewplantlist activity
-    private val activity: Activity
+    private val activity: Activity,
+    private val onWatered: () -> Unit
     ): RecyclerView.Adapter<WaterReminderViewHolder>() {
 
 
@@ -30,7 +31,7 @@ class WaterReminderAdapter(
     }*/
     // edited nov 5
     override fun onBindViewHolder(holder: WaterReminderViewHolder, position: Int) {
-        holder.bindData(data[position], fullPlantList, enableClick, activity)
+        holder.bindData(data[position], fullPlantList, enableClick, activity, onWatered)
 
     }
 

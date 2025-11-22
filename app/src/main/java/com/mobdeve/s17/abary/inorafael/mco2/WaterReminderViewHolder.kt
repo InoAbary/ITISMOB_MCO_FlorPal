@@ -45,7 +45,7 @@ class WaterReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     }
 
 
-    fun bindData(reminder: WaterReminderModel, plantList: ArrayList<PlantModel>, enableClick: Boolean, activity: Activity) {
+    fun bindData(reminder: WaterReminderModel, plantList: ArrayList<PlantModel>, enableClick: Boolean, activity: Activity, onWatered: () -> Unit) {
         ivPlantPhoto.setImageResource(reminder.plant.plantPhoto)
         tvPlantNickName.text = reminder.plant.plantNickName
         tvPlantName.text = reminder.plant.plantName
@@ -122,6 +122,7 @@ class WaterReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
                             )
 
                             tvStatus.text = "Watered today"
+                            onWatered()
                         }
                 }
         }

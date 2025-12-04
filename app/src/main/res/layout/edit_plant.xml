@@ -17,18 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/plantImg"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:scaleType="centerCrop"
-                android:alpha="0.6"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:srcCompat="@tools:sample/avatars"/>
-
             <ImageButton
                 android:id="@+id/addPhotoIcon"
                 android:layout_width="50dp"
@@ -58,6 +46,21 @@
                 android:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="@id/plantImg"
                 app:layout_constraintTop_toTopOf="@id/plantImg" />
+
+            <ImageView
+                android:id="@+id/plantImg"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_marginTop="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:alpha="0.6"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Plant name and divider -->

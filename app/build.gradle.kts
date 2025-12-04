@@ -63,8 +63,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
-    implementation(libs.androidx.camera.core)
-    implementation(libs.androidx.camera.lifecycle)
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -81,4 +80,10 @@ dependencies {
     // navigation components
     implementation("androidx.navigation:navigation-fragment:2.9.5")
     implementation("androidx.navigation:navigation-ui:2.9.5")
+
+    implementation("androidx.camera:camera-core:1.3.3")
+    implementation("androidx.camera:camera-camera2:1.3.3")
+    implementation("androidx.camera:camera-lifecycle:1.3.3")
+    implementation("androidx.camera:camera-view:1.3.0")
+    implementation("androidx.camera:camera-extensions:1.3.0")
 }

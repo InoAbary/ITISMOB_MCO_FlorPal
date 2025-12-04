@@ -71,7 +71,7 @@
             android:id="@+id/addPlantBtn"
             android:layout_width="120dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
+            android:layout_margin="6dp"
             android:background="#72997F"
             android:fontFamily="serif"
             android:text="+ Add Plant"
@@ -163,6 +163,7 @@
             android:backgroundTint="#205935"
             android:text="Filter"
             android:textColor="#FFFFFF" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

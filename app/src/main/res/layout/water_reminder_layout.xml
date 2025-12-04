@@ -8,7 +8,7 @@
     android:padding="10dp"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="8dp"
-    android:background="@drawable/reminder_border_bg">
+    android:background="@drawable/round_image_bg">
 
     <!-- Plant Image -->
     <ImageView
@@ -66,32 +66,24 @@
 
         <Button
             android:id="@+id/btnWater"
-            style="@style/Widget.AppCompat.Button"
             android:layout_width="75dp"
-            android:layout_height="30dp"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/button_border"
-            android:backgroundTint="#FFFFFF"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp"
+            android:layout_height="36dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/btn_water"
             android:text="Water"
-            android:textColor="#577AE0"
-            android:textSize="12sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-medium" />
 
         <Button
             android:id="@+id/btnEdit"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/button_border"
-            android:backgroundTint="#FFFFFF"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp"
+            android:layout_width="75dp"
+            android:layout_height="36dp"
+            android:background="@drawable/btn_edit"
             android:text="Edit"
-            android:textColor="#4CAF50"
-            android:textSize="12sp" />
-
-
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
     <!-- Heart Icon at the far right -->

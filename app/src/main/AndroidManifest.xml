@@ -2,7 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <!-- added for notifs -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+
+
 
     <application
         android:allowBackup="true"
@@ -13,6 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MCO2_FlorPal"
+        android:requestLegacyExternalStorage="true"
         android:largeHeap="true">
 
         <!-- pwedeng idelete muna if not working properly
@@ -52,8 +64,18 @@
             android:name=".AddPlantActivity"
             android:theme="@style/Theme.MCO2_FlorPal"
             />
+
+        <activity
+            android:name=".CameraActivity"
+            android:theme="@style/Theme.MCO2_FlorPal"
+            />
+
         <activity
             android:name=".EditPlantActivity"
+            android:theme="@style/Theme.MCO2_FlorPal"
+            />
+        <activity
+            android:name=".FilterPlantActivity"
             android:theme="@style/Theme.MCO2_FlorPal"
             />
         <receiver

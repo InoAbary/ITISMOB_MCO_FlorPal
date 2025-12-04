@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
@@ -109,6 +110,24 @@ class ViewPlantListActivity: ComponentActivity (){
         if (filterBinding.filterPastDueCb.isChecked){
             filteredList = ArrayList(filteredList.filter{it.lastWateredDaysAgo > 0})
         }
+        if (filterBinding.filterWaterTodayCb.isChecked){
+            filteredList = ArrayList(filteredList.filter{it.lastWateredDaysAgo == 0})
+        }
+
+        val checkedId = filterBinding.sortRadioGroup.checkedRadioButtonId
+
+        if (checkedId != -1) {
+            val checkedBtn = findViewById<RadioButton>(checkedId)
+
+            when( checkedBtn.text.toString())  {
+                "Alphabetical Ascending" -> filteredList.sortBy {it.plant.plantNickName}
+                "Alphabetical Descending" -> filteredList.sortByDescending {it.plant.plantNickName}
+                "Last Watered" -> filteredList.sortBy {it.lastWateredDaysAgo}
+
+            }
+
+        }
+
 
         reminderAdapter.updateData(filteredList)
     }
@@ -120,6 +139,8 @@ class ViewPlantListActivity: ComponentActivity (){
         filterBinding.filterPastDueCb.isChecked = sp.getBoolean("FLORPAL_PASTDUE", false)
         filterBinding.filterWaterTodayCb.isChecked = sp.getBoolean("FLORPAL_WATERTODAY", false)
         filterBinding.filterWaterWeekCb.isChecked = sp.getBoolean("FLORPAL_WATERTHISWEEK", false)
+
+        filterBinding.sortRadioGroup.check(sp.getInt("FLORPAL_RADIOBUTTON", -1))
 
         loadPlants()
 
@@ -133,6 +154,7 @@ class ViewPlantListActivity: ComponentActivity (){
         editor.putBoolean("FLORPAL_PASTDUE", filterBinding.filterPastDueCb.isChecked)
         editor.putBoolean("FLORPAL_WATERTODAY", filterBinding.filterWaterTodayCb.isChecked)
         editor.putBoolean("FLORPAL_WATERTHISWEEK", filterBinding.filterWaterWeekCb.isChecked)
+        editor.putInt("FLORPAL_RADIOBUTTON", filterBinding.sortRadioGroup.checkedRadioButtonId)
         editor.apply()
     }
 
@@ -176,7 +198,7 @@ class ViewPlantListActivity: ComponentActivity (){
                 var plant = PlantModel(
                     doc.getString(FlorPal_FireStoreRefs.NICKNAME_FIELD) ?: "",
                     doc.getString(FlorPal_FireStoreRefs.NAME_FIELD) ?: "",
-                    doc.getLong(FlorPal_FireStoreRefs.PLANT_PHOTO_FIELD)!!.toInt(),
+                    doc.getString(FlorPal_FireStoreRefs.PLANT_PHOTO_FIELD)!!.toString(),
                     doc.getString(FlorPal_FireStoreRefs.FRUIT_PRODUCTION_FIELD) ?: "",
                     doc.getString(FlorPal_FireStoreRefs.FLOWER_COLOR_FIELD) ?: "",
                     CustomDate(newDateCreated.month.toString(), newDateCreated.dayOfMonth, newDateCreated.year),

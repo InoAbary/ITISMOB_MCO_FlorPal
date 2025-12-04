@@ -1,11 +1,19 @@
 package com.mobdeve.s17.abary.inorafael.mco2
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mobdeve.s17.abary.inorafael.mco2.databinding.EditPlantBinding
+import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
@@ -15,6 +23,34 @@ import java.util.Locale
 class EditPlantActivity : AppCompatActivity() {
 
     private lateinit var binding: EditPlantBinding
+    private var capturedImage: Uri? = null
+
+
+    private val activityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+            result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri = result.data?.data ?: result.data?.getStringExtra("captured_image")?.toUri()
+
+            uri?.let {
+
+                try {
+                    contentResolver.takePersistableUriPermission(
+                        it,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (e: SecurityException) {
+
+                }
+
+                capturedImage = it
+                binding.plantImg.setImageURI(capturedImage)
+            }
+
+        }
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,21 +58,26 @@ class EditPlantActivity : AppCompatActivity() {
         setContentView(binding.root)
         val dateFormatterIn = DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendPattern("MMMM dd, yyyy")
+            .appendPattern("MMMM d, yyyy")
             .toFormatter(Locale.ENGLISH)
 
         val dateFormatterOut = DateTimeFormatter.ofPattern("MM/dd/yyyy")
 
 
 
-        // retrieve plant model from intent
+
         val plant = intent.getSerializableExtra("plantModel") as? PlantModel
         if (plant != null) {
-            // load image and name
-            binding.plantImg.setImageResource(plant.plantPhoto)
+
+            if (!plant.plantPhoto.isNullOrBlank()) {
+                val uri = plant.plantPhoto.toUri()
+                capturedImage = uri
+                binding.plantImg.setImageURI(uri)
+            }
+
             binding.plantNameTv.setText(plant.plantNickName)
 
-            // load editable fields
+
             binding.wateringAmountInput.setText(plant.wateringAmount?.toString() ?: "")
             binding.locationInput.setText(plant.location ?: "")
             binding.fruitRateInput.setText(plant.fruitProductionRate ?: "")
@@ -60,17 +101,27 @@ class EditPlantActivity : AppCompatActivity() {
 
 
 
+        binding.addPhotoIcon.setOnClickListener {
+
+            val intent = Intent(this, CameraActivity::class.java)
+            activityResultLauncher.launch(intent)
+
+        }
+
+        binding.removePhotoIcon.setOnClickListener {
+            capturedImage = null
+            binding.plantImg.setImageURI(null)
+        }
+
         binding.nextWateringDateInput.setOnClickListener {
             binding.nextWateringDateInput.setText("2025-11-08")
         }
 
         // image buttons
         // nothing yet
-        binding.addPhotoIcon.setOnClickListener {
-        }
 
-        binding.removePhotoIcon.setOnClickListener {
-        }
+
+
 
         // cancel button
         binding.cancelBtn.setOnClickListener {
@@ -86,12 +137,21 @@ class EditPlantActivity : AppCompatActivity() {
                 .setPositiveButton("Yes") { _, _ ->
                     val db = FirebaseFirestore.getInstance()
                     val userRef = db.collection(FlorPal_FireStoreRefs.PLANTS_COLLECTION)
-                    userRef.document(plant!!.plant_id!!).update(
-                        FlorPal_FireStoreRefs.NICKNAME_FIELD, binding.plantNameTv.text.toString(),
-                        FlorPal_FireStoreRefs.LOCATION_FIELD, binding.locationInput.text.toString(),
-                        FlorPal_FireStoreRefs.WATERING_AMOUT_FIELD, binding.wateringAmountInput.text.toString().toDouble(),
-                        FlorPal_FireStoreRefs.FRUIT_PRODUCTION_FIELD, binding.fruitRateInput.text.toString(),
-                        FlorPal_FireStoreRefs.FLOWER_COLOR_FIELD, binding.flowerColorInput.text.toString())
+
+                    val updates = hashMapOf<String, Any>(
+                        FlorPal_FireStoreRefs.NICKNAME_FIELD to binding.plantNameTv.text.toString(),
+                        FlorPal_FireStoreRefs.LOCATION_FIELD to binding.locationInput.text.toString(),
+                        FlorPal_FireStoreRefs.WATERING_AMOUT_FIELD to binding.wateringAmountInput.text.toString().toDouble(),
+                        FlorPal_FireStoreRefs.FRUIT_PRODUCTION_FIELD to binding.fruitRateInput.text.toString(),
+                        FlorPal_FireStoreRefs.FLOWER_COLOR_FIELD to binding.flowerColorInput.text.toString()
+
+                    )
+
+                    capturedImage?.let{
+                        updates[FlorPal_FireStoreRefs.PLANT_PHOTO_FIELD] = it.toString()
+                    }
+
+                    userRef.document(plant!!.plant_id!!).update(updates)
                     Toast.makeText(this, "Changes saved!", Toast.LENGTH_SHORT).show()
                     finish()
                 }

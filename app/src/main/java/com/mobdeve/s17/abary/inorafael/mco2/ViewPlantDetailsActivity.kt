@@ -2,6 +2,7 @@ package com.mobdeve.s17.abary.inorafael.mco2
 
 // nov 22 ver
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -9,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mobdeve.s17.abary.inorafael.mco2.databinding.ViewPlantDetailsBinding
 import java.time.LocalDate
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.File
 import java.time.Period
 import java.time.format.DateTimeFormatterBuilder
 import java.util.Locale
@@ -59,7 +62,11 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
     }
 
     private fun displayPlantDetails(plant: PlantModel) {
-        binding.plantImg.setImageResource(plant.plantPhoto)
+
+        if (!plant.plantPhoto.isNullOrBlank()) {
+            val uri = plant.plantPhoto.toUri()
+            binding.plantImg.setImageURI(uri)
+        }
         binding.plantNameTv.text = plant.plantNickName
         binding.plantTypeTv.text = plant.plantName
         binding.fruitProductionTv.text = plant.fruitProductionRate

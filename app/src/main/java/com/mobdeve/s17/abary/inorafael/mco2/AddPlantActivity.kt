@@ -3,10 +3,14 @@ package com.mobdeve.s17.abary.inorafael.mco2
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +19,7 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.compose.material3.contentColorFor
 import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mobdeve.s17.abary.inorafael.mco2.databinding.AddPlantBinding
@@ -26,11 +31,41 @@ import androidx.core.content.edit
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import androidx.core.net.toUri
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
 
 class AddPlantActivity : AppCompatActivity() {
 
     private lateinit var binding: AddPlantBinding
-    private var imageCapture: ImageCapture? = null
+
+    private var capturedImage: Uri? = null
+    private val activityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+            result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri = result.data?.data ?: result.data?.getStringExtra("captured_image")?.toUri()
+
+            uri?.let {
+
+                try {
+                    contentResolver.takePersistableUriPermission(
+                        it,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (e: SecurityException) {
+
+                }
+
+                capturedImage = it
+                binding.defaultPlantImg.setImageURI(capturedImage)
+                binding.addPhotoLabel.text = "Take New Photo"
+                binding.addPhotoIcon.visibility = View.GONE
+            }
+
+        }
+    }
 
 //    private val requestCameraPermission =
 //        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -59,12 +94,8 @@ class AddPlantActivity : AppCompatActivity() {
 
         binding.defaultPlantImg.setOnClickListener {
 
-//            if (hasCameraPermission()) {
-//                startCamera()
-//            } else {
-//                requestCameraPermission.launch(Manifest.permission.CAMERA)
-//            }
-
+            val intent = Intent(this, CameraActivity::class.java)
+            activityResultLauncher.launch(intent)
 
         }
 
@@ -91,16 +122,24 @@ class AddPlantActivity : AppCompatActivity() {
             val flowerColor = binding.flowerColorInput.text.toString()
             val wateringAmount = binding.wateringAmountInput.text.toString().ifBlank{"0"}
             val location = binding.locationInput.text.toString()
+
+
+
             val now = LocalDate.now()
 
 
+            if (capturedImage == null || capturedImage.toString().isBlank()) {
+                Toast.makeText(this, "Please add a photo.", Toast.LENGTH_SHORT)
+                    .show()
 
-            if (name.isBlank() || type.isBlank() || lastDate.isBlank() ||nextDate.isBlank()) {
-                Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
+            } else if (name.isBlank() || type.isBlank() || lastDate.isBlank() ||nextDate.isBlank()) {
+                Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 val dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
                 val newLastWaterDate = LocalDate.parse(lastDate, dateFormatter)
                 val newNextWaterDate = LocalDate.parse(nextDate, dateFormatter)
+
 
                 // added nov 22
 
@@ -111,9 +150,16 @@ class AddPlantActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
+
+                val imagePath = imageToStorage(capturedImage!!)
+
+                if(imagePath == null) {
+                    Toast.makeText(this, "Failed to save image.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 // end of nov 22 change
 
-                val newPlant = PlantModel(name, name, 0,
+                val newPlant = PlantModel(name, name, "",
                                             fruitProductionRate, flowerColor, CustomDate(now.month.toString(), now.dayOfMonth, now.year),
                                 CustomDate(newLastWaterDate.month.toString(), newLastWaterDate.dayOfMonth, newLastWaterDate.year), wateringAmount.toDouble(),
                                             location, false, CustomDate(newNextWaterDate.month.toString(), newNextWaterDate.dayOfMonth, newNextWaterDate.year))
@@ -130,7 +176,7 @@ class AddPlantActivity : AppCompatActivity() {
                     FlorPal_FireStoreRefs.FRUIT_PRODUCTION_FIELD to newPlant.fruitProductionRate.toString(),
                     FlorPal_FireStoreRefs.NAME_FIELD to newPlant.plantName,
                     FlorPal_FireStoreRefs.NICKNAME_FIELD to newPlant.plantNickName,
-                    FlorPal_FireStoreRefs.PLANT_PHOTO_FIELD to newPlant.plantPhoto,
+                    FlorPal_FireStoreRefs.PLANT_PHOTO_FIELD to imagePath,
                     FlorPal_FireStoreRefs.WATERED_DATE_FIELD to newPlant.wateredDate.toString(),
                     FlorPal_FireStoreRefs.WATERING_AMOUT_FIELD to newPlant.wateringAmount.toString().toDouble(),
                     FlorPal_FireStoreRefs.LOCATION_FIELD to newPlant.location.toString(),
@@ -152,77 +198,40 @@ class AddPlantActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+
     }
 
-    private fun hasCameraPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this, Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
+    private fun imageToStorage(uri: Uri): String?{
+        return try{
+
+            val fileName = "plant_${UUID.randomUUID()}.jpg"
+
+            val directory = File(filesDir, "plant_images")
+            if (!directory.exists()){
+                directory.mkdirs()
+            }
+            val file = File(directory, fileName)
+            val inputStream = contentResolver.openInputStream(uri)
+            if (inputStream == null) {
+                Toast.makeText(this, "Cannot read image from gallery", Toast.LENGTH_SHORT).show()
+                return null
+            }
+
+            inputStream.use { input ->
+                FileOutputStream(file).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
-//    private fun startCamera() {
-//        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-//
-//        cameraProviderFuture.addListener({
-//            val cameraProvider = cameraProviderFuture.get()
-//
-//            val preview = Preview.Builder().build().also {
-//                it.setSurfaceProvider(previewView.surfaceProvider)
-//            }
-//
-//            imageCapture = ImageCapture.Builder()
-//                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-//                .build()
-//
-//            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-//
-//            cameraProvider.unbindAll()
-//            cameraProvider.bindToLifecycle(
-//                this,
-//                cameraSelector,
-//                preview,
-//                imageCapture
-//            )
-//        }, ContextCompat.getMainExecutor(this))
-//    }
-//
-//    private fun takePhoto() {
-//        val capture = imageCapture ?: return
-//
-//        val name = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
-//            .format(System.currentTimeMillis())
-//
-//        // Save to MediaStore (Gallery)
-//        val contentValues = ContentValues().apply {
-//            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-//            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-//            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-App")
-//        }
-//
-//        val outputOptions = ImageCapture.OutputFileOptions
-//            .Builder(contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-//            .build()
-//
-//        capture.takePicture(
-//            outputOptions,
-//            ContextCompat.getMainExecutor(this),
-//            object : ImageCapture.OnImageSavedCallback {
-//                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-//                    Toast.makeText(
-//                        this@AddPlantActivity,
-//                        "Saved to Gallery!",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//
-//                override fun onError(exception: ImageCaptureException) {
-//                    Toast.makeText(
-//                        this@AddPlantActivity,
-//                        "Error: ${exception.message}",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//        )
-//    }
+
+
+
+
 }

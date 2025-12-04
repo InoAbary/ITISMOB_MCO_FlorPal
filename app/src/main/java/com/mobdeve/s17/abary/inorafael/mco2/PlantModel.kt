@@ -4,7 +4,7 @@ import java.io.Serializable // added nov 5
 class PlantModel (
     var plantNickName : String,
     var plantName : String,
-    var plantPhoto : Int,
+    var plantPhoto : String,
     var fruitProductionRate : String? = null, // edited Nov 5
     var flowerColor : String,
     var dateCreated : CustomDate,

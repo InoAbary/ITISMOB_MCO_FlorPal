@@ -1,27 +1,18 @@
 package com.mobdeve.s17.abary.inorafael.mco2
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 import com.mobdeve.s17.abary.inorafael.mco2.databinding.MainpageBinding
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.edit
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.util.Locale
 
@@ -30,81 +21,77 @@ class MainActivity : ComponentActivity() {
     private lateinit var mainBinding: MainpageBinding
     private lateinit var rvPlants: RecyclerView
     private lateinit var rvReminders: RecyclerView
-
     private lateinit var plantAdapter: PlantAdapter
     private lateinit var reminderAdapter: WaterReminderAdapter
-
     private var plantList = ArrayList<PlantModel>()
-
-    private var reminderList: ArrayList<WaterReminderModel> = ArrayList<WaterReminderModel>()
+    private var reminderList: ArrayList<WaterReminderModel> = ArrayList()
+    private val handler = Handler(Looper.getMainLooper())
 
     private val activityResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) {
-        result ->
-        if (result.resultCode == Activity.RESULT_OK){
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
             loadPlants()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         mainBinding = MainpageBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
-        // --- FOR NOTIFS
-        // to ask permission first
+        // --- Notifications setup
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
         }
-
-        // notifs + daily alarm
         FlorPalNotificationHelper.createNotificationChannel(this)
         FlorPalAlarmScheduler.scheduleDailyAlarm(this)
 
+        // --- Plants RecyclerView (Horizontal Carousel)
         rvPlants = mainBinding.plantsRecyclerView
         plantAdapter = PlantAdapter(plantList)
         rvPlants.adapter = plantAdapter
-        rvPlants.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rvPlants.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        // --- Second RecyclerView: Watering Reminders (Vertical)
+        // --- Watering Reminders RecyclerView (Vertical)
         rvReminders = mainBinding.remindersRecyclerView
-        reminderAdapter = WaterReminderAdapter(reminderList, plantList, enableClick = false, this) {loadPlants()} // edited nov 6
+        reminderAdapter = WaterReminderAdapter(reminderList, plantList, enableClick = false, this) {
+            loadPlants()
+        }
         rvReminders.adapter = reminderAdapter
         rvReminders.layoutManager = LinearLayoutManager(this)
 
+        // --- Load data
         loadPlants()
-        // ONLY FOR TESTING. change later
-        // button to go to viewplantlist
-         mainBinding.viewPlantsBtn.setOnClickListener {
-             val intent = Intent(this, ViewPlantListActivity::class.java)
-             startActivity(intent)
-         }
 
-        // nov 6 ver
-        // button to go to add plant activity
+        // --- Button listeners
+        mainBinding.viewPlantsBtn.setOnClickListener {
+            startActivity(Intent(this, ViewPlantListActivity::class.java))
+        }
         mainBinding.addPlantBtn.setOnClickListener {
-            val intent = Intent(this, AddPlantActivity::class.java)
-            activityResultLauncher.launch(intent)
+            activityResultLauncher.launch(Intent(this, AddPlantActivity::class.java))
+        }
+        mainBinding.filterBtn.setOnClickListener {
+            startActivity(Intent(this, FilterPlantActivity::class.java))
         }
 
-
-
+        // carousel movement
+        startSmoothCarousel()
     }
 
-    private fun loadPlants(){
-
+    private fun loadPlants() {
         val sp = getSharedPreferences("FlorPal_User_Prefs", MODE_PRIVATE)
         var userId = sp.getString("user_id", null)
-
-        if(userId == null){
+        if (userId == null) {
             userId = java.util.UUID.randomUUID().toString()
-            sp.edit { putString("user_id", userId) }
+            sp.edit().putString("user_id", userId).apply()
         }
 
         val db = FirebaseFirestore.getInstance()
         val userRef = db.collection(FlorPal_FireStoreRefs.PLANTS_COLLECTION)
         val query = userRef.whereEqualTo(FlorPal_FireStoreRefs.USER_ID_FIELD, userId)
+
         val dateFormatter = DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendPattern("MMMM d, yyyy")
@@ -112,29 +99,26 @@ class MainActivity : ComponentActivity() {
 
         query.get().addOnSuccessListener { result ->
             plantList.clear()
-
             if (result.isEmpty) {
                 plantAdapter.notifyDataSetChanged()
-
                 reminderList.clear()
                 reminderAdapter.notifyDataSetChanged()
                 return@addOnSuccessListener
             }
-            for(doc in result){
 
-
+            for (doc in result) {
                 val dateCreated = doc.getString(FlorPal_FireStoreRefs.DATE_CREATED_FIELD) ?: "N/A"
-                var wateredDate = doc.getString(FlorPal_FireStoreRefs.WATERED_DATE_FIELD) ?: "N/A"
-
-                var nextDate = doc.getString(FlorPal_FireStoreRefs.NEXT_WATER_DATE_FIELD) ?: "N/A"
+                val wateredDate = doc.getString(FlorPal_FireStoreRefs.WATERED_DATE_FIELD) ?: "N/A"
+                val nextDate = doc.getString(FlorPal_FireStoreRefs.NEXT_WATER_DATE_FIELD) ?: "N/A"
 
                 val newDateCreated = LocalDate.parse(dateCreated, dateFormatter)
                 val newLastWaterDate = LocalDate.parse(wateredDate, dateFormatter)
                 val newNextWaterDate = LocalDate.parse(nextDate, dateFormatter)
-                var plant = PlantModel(
+
+                val plant = PlantModel(
                     doc.getString(FlorPal_FireStoreRefs.NICKNAME_FIELD) ?: "",
                     doc.getString(FlorPal_FireStoreRefs.NAME_FIELD) ?: "",
-                    doc.getLong(FlorPal_FireStoreRefs.PLANT_PHOTO_FIELD)!!.toInt(),
+                    doc.getString(FlorPal_FireStoreRefs.PLANT_PHOTO_FIELD) ?: "",
                     doc.getString(FlorPal_FireStoreRefs.FRUIT_PRODUCTION_FIELD) ?: "",
                     doc.getString(FlorPal_FireStoreRefs.FLOWER_COLOR_FIELD) ?: "",
                     CustomDate(newDateCreated.month.toString(), newDateCreated.dayOfMonth, newDateCreated.year),
@@ -143,27 +127,38 @@ class MainActivity : ComponentActivity() {
                     doc.getString(FlorPal_FireStoreRefs.LOCATION_FIELD) ?: "",
                     doc.getBoolean(FlorPal_FireStoreRefs.FAVORITED_FIELD) ?: false,
                     CustomDate(newNextWaterDate.month.toString(), newNextWaterDate.dayOfMonth, newNextWaterDate.year)
-
                 )
                 plant.plant_id = doc.id
                 plantList.add(plant)
-
             }
 
             plantAdapter.notifyDataSetChanged()
             reminderList = DataGenerator().generateWaterReminderData(this, plantList)
             reminderAdapter.updateData(reminderList)
-        }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to get plants. Reason: ${e.toString()}", Toast.LENGTH_SHORT).show()
-            }
 
+        }.addOnFailureListener { e ->
+            Toast.makeText(this, "Failed to get plants. Reason: ${e}", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    override fun onResume(){
+    private fun startSmoothCarousel() {
+        val layoutManager = rvPlants.layoutManager as LinearLayoutManager
+        val scrollSpeed = 2 // pixels per frame
+
+        handler.post(object : Runnable {
+            override fun run() {
+                rvPlants.scrollBy(scrollSpeed, 0)
+                // loop when scroll of photos is finished
+                if (rvPlants.computeHorizontalScrollOffset() + rvPlants.width >= rvPlants.computeHorizontalScrollRange()) {
+                    rvPlants.scrollToPosition(0)
+                }
+                handler.postDelayed(this, 16)
+            }
+        })
+    }
+
+    override fun onResume() {
         super.onResume()
         loadPlants()
     }
-
-
 }

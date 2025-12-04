@@ -4,6 +4,7 @@ package com.mobdeve.s17.abary.inorafael.mco2
 import android.app.Activity
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -11,8 +12,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.File
 import java.time.LocalDate
 import java.util.Locale
 
@@ -46,11 +49,15 @@ class WaterReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
 
 
     fun bindData(reminder: WaterReminderModel, plantList: ArrayList<PlantModel>, enableClick: Boolean, activity: Activity, onWatered: () -> Unit) {
-        ivPlantPhoto.setImageResource(reminder.plant.plantPhoto)
+
+        if (!reminder.plant.plantPhoto.isNullOrBlank()) {
+            val uri = reminder.plant.plantPhoto.toUri()
+            ivPlantPhoto.setImageURI(uri)
+        }
         tvPlantNickName.text = reminder.plant.plantNickName
         tvPlantName.text = reminder.plant.plantName
         tvStatus.text = reminder.statusText
-        tvHeart.text = "♡"
+        tvHeart.text = "\uD83E\uDD0D"
         if (reminder.plant.favorite)
             tvHeart.text = "♥"
 
@@ -63,7 +70,7 @@ class WaterReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
         tvHeart.setOnClickListener {
             // Toggle heart icon ♡ → ♥
             reminder.plant.favorite = !reminder.plant.favorite
-            tvHeart.text = "♡"
+            tvHeart.text = "\uD83E\uDD0D"
             if (reminder.plant.favorite)
                 tvHeart.text = "♥"
 

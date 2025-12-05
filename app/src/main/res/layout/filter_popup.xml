@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/popup_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RadioGroup
+        android:id="@+id/mainFilterRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/filterAllRb"
+            android:text="All Plants"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:checked="true"
+            android:padding="4dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/filterFavsRb"
+            android:text="Favorites"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:padding="4dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/filterTodayRb"
+            android:text="Watering Today"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:padding="4dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/filterWeekRb"
+            android:text="Watering This Week"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:padding="4dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/filterPastRb"
+            android:text="Past Due"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:padding="4dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/applyBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#1d5d2d"
+        android:text="Apply"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:layout_marginTop="12dp"
+        android:paddingVertical="6dp"/>
+</LinearLayout>

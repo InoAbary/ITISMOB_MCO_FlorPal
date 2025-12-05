@@ -1,169 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFFFFF">
+    android:layout_height="match_parent">
 
-    <!-- Top Green Bar -->
-
-    <TextView
-        android:id="@+id/FlorPalTv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#205935"
-        android:padding="10dp"
-        android:text="FlorPal"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Title Section -->
-    <LinearLayout
-        android:id="@+id/myPlantsTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/FlorPalTv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
 
         <TextView
-            android:id="@+id/titleMyPlants"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="serif"
-            android:paddingEnd="6dp"
-            android:text="My Plants!"
-            android:textColor="#205935"
-            android:textSize="34sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/leafIv"
-            android:layout_width="60dp"
-            android:layout_height="70dp"
-            android:src="@drawable/leaf" />
-    </LinearLayout>
-
-    <!-- Curved Green Background with Add Button + RecyclerView -->
-    <LinearLayout
-        android:id="@+id/curvedBackground"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/cardbg"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/myPlantsTv">
-
-        <Button
-            android:id="@+id/addPlantBtn"
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:layout_margin="6dp"
-            android:background="#72997F"
-            android:fontFamily="serif"
-            android:text="+ Add Plant"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/plantsRecyclerView"
-            android:layout_width="440dp"
-            android:layout_height="231dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <!-- "Time to Water!" Title -->
-    <TextView
-        android:id="@+id/timeToWaterTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="2dp"
-        android:fontFamily="serif"
-        android:padding="12dp"
-        android:text="Time to Water!"
-        android:textColor="#205935"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/curvedBackground" />
-
-    <!-- Light Green Background Section -->
-    <LinearLayout
-        android:id="@+id/lightGreenBackground"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        tools:layout_height="230dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/maincard2bg"
-        android:clipToOutline="true"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:outlineProvider="background"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/timeToWaterTV"
-        app:layout_constraintBottom_toTopOf="@id/filterButtonsLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/remindersRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingBottom="10dp" />
-    </LinearLayout>
-
-    <!-- Filter + View Buttons (BELOW the green section) -->
-    <LinearLayout
-        android:id="@+id/filterButtonsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <!-- View Button -->
-        <Button
-            android:id="@+id/viewPlantsBtn"
+            android:id="@+id/FlorPalTv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="#205935"
-            android:text="View: All Plants"
+            android:background="#205935"
+            android:padding="10dp"
+            android:text="FlorPal"
             android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Filter Button -->
-        <Button
-            android:id="@+id/filterBtn"
+        <ImageButton
+            android:id="@+id/btnSpotify"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_music_bg"
+            android:contentDescription="Play Music"
+            android:padding="4dp"
+            android:src="@drawable/ic_music_note"
+            app:layout_constraintBottom_toBottomOf="@id/FlorPalTv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintTop_toTopOf="@id/FlorPalTv"
+            app:layout_constraintWidth_default="wrap" />
+
+
+        <LinearLayout
+            android:id="@+id/myPlantsTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:backgroundTint="#205935"
-            android:text="Filter"
-            android:textColor="#FFFFFF" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/FlorPalTv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/titleMyPlants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="serif"
+                android:paddingEnd="6dp"
+                android:text="My Plants!"
+                android:textColor="#205935"
+                android:textSize="34sp"
+                android:textStyle="bold" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/leafIv"
+                android:layout_width="60dp"
+                android:layout_height="70dp"
+                android:src="@drawable/leaf" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/curvedBackground"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/cardbg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/myPlantsTv">
+
+            <Button
+                android:id="@+id/addPlantBtn"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="#72997F"
+                android:fontFamily="serif"
+                android:text="+ Add Plant"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/plantsRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="231dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <!-- "Time to Water!" Title -->
+        <TextView
+            android:id="@+id/timeToWaterTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="2dp"
+            android:fontFamily="serif"
+            android:padding="12dp"
+            android:text="Time to Water!"
+            android:textColor="#205935"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/curvedBackground" />
+
+        <!-- Light Green Background Section -->
+        <LinearLayout
+            android:id="@+id/lightGreenBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            tools:layout_height="230dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/leafbg"
+            android:clipToOutline="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:outlineProvider="background"
+            android:padding="12dp"
+            app:layout_constraintTop_toBottomOf="@id/timeToWaterTV"
+            app:layout_constraintBottom_toTopOf="@id/filterButtonsLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/remindersRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="10dp" />
+
+            <!-- Placeholder image when no reminders -->
+            <ImageView
+                android:id="@+id/emptyRemindersIv"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:src="@drawable/noplants"
+                android:contentDescription="No reminders yet"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Filter + View Buttons (BELOW the green section) -->
+        <LinearLayout
+            android:id="@+id/filterButtonsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <!-- View Button -->
+            <Button
+                android:id="@+id/viewPlantsBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#205935"
+                android:text="View: All Plants"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+            <!-- Filter Button -->
+            <Button
+                android:id="@+id/filterBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#205935"
+                android:text="Filter"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Logo Overlay -->
+    <ImageView
+        android:id="@+id/logoOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:src="@drawable/florpallogo_removebg_preview"
+        android:background="#FFFFFF"
+        android:contentDescription="Logo" />
+
+</FrameLayout>

@@ -2,6 +2,10 @@ package com.mobdeve.s17.abary.inorafael.mco2
 
 // nov 22 ver
 import java.io.Serializable // added nov 5
+import java.time.LocalDate
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 class CustomDate(month: String, day: Int, year: Int) : Serializable {
 
@@ -52,7 +56,20 @@ class CustomDate(month: String, day: Int, year: Int) : Serializable {
     fun daysUntil(other: CustomDate): Int {
         val thisDate = java.time.LocalDate.of(year, monthInt, day)
         val otherDate = java.time.LocalDate.of(other.year, other.monthInt, other.day)
-        return java.time.Period.between(thisDate, otherDate).days
+        return ChronoUnit.DAYS.between(thisDate, otherDate).toInt()
+
+    }
+
+    companion object {
+        fun fromString(date: String): CustomDate {
+            val formatter = DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .appendPattern("MMMM d, yyyy")
+                .toFormatter(Locale.ENGLISH)
+
+            val parsed = LocalDate.parse(date, formatter)
+            return CustomDate(parsed.month.toString(), parsed.dayOfMonth, parsed.year)
+        }
     }
 }
 

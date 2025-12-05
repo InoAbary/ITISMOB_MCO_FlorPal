@@ -1,8 +1,10 @@
 package com.mobdeve.s17.abary.inorafael.mco2
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.RadioButton
@@ -32,6 +34,10 @@ class ViewPlantListActivity: ComponentActivity (){
     private var plantList: ArrayList<PlantModel>  = ArrayList<PlantModel>()
     private var reminderList: ArrayList<WaterReminderModel> = ArrayList<WaterReminderModel>()
 
+    private var firstOpen = true
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +53,11 @@ class ViewPlantListActivity: ComponentActivity (){
         rvReminders.adapter = reminderAdapter
         rvReminders.layoutManager = LinearLayoutManager(this)
 
-        loadPlants()
-
-
-
         binding.backBtn.setOnClickListener {
 
+            val data = Intent()
+            data.putExtra("RESET_FILTER", true)
+            setResult(Activity.RESULT_OK, data)
             finish()
 
         }
@@ -64,6 +69,12 @@ class ViewPlantListActivity: ComponentActivity (){
                 startActivity(intent)
             }
         }
+
+        // spotify
+        binding.btnSpotify.setOnClickListener {
+            playRandomSpotify()
+        }
+
 
         // drawer layout
         // open the drawer when the filter button is clicked
@@ -80,6 +91,46 @@ class ViewPlantListActivity: ComponentActivity (){
         val navView: NavigationView = binding.filterPanel
         val headerView = navView.getHeaderView(0)
         filterBinding = FilterSidePanelBinding.bind(headerView)
+
+        // prefill drawer based on main page filter BEFORE you load data
+        val mainSp = getSharedPreferences("FLORPAL_MAIN_FILTER", MODE_PRIVATE)
+        when (mainSp.getString("MAIN_FILTER_VALUE", "ALL")) {
+            "FAV" -> filterBinding.filterFavsCb.isChecked = true
+            "TODAY" -> filterBinding.filterWaterTodayCb.isChecked = true
+            "WEEK" -> filterBinding.filterWaterWeekCb.isChecked = true
+            "PAST" -> filterBinding.filterPastDueCb.isChecked = true
+        }
+
+        applyFilters()
+
+        if (firstOpen) {
+            val sp = getSharedPreferences("FLORPAL_FILTEROPTIONS", MODE_PRIVATE)
+            val editor = sp.edit()
+
+            when (mainSp.getString("MAIN_FILTER_VALUE", "ALL")) {
+                "FAV" -> {
+                    filterBinding.filterFavsCb.isChecked = true
+                    editor.putBoolean("FLORPAL_FAVORITES", true)
+                }
+                "TODAY" -> {
+                    filterBinding.filterWaterTodayCb.isChecked = true
+                    editor.putBoolean("FLORPAL_WATERTODAY", true)
+                }
+                "WEEK" -> {
+                    filterBinding.filterWaterWeekCb.isChecked = true
+                    editor.putBoolean("FLORPAL_WATERTHISWEEK", true)
+                }
+                "PAST" -> {
+                    filterBinding.filterPastDueCb.isChecked = true
+                    editor.putBoolean("FLORPAL_PASTDUE", true)
+                }
+            }
+
+            editor.apply()
+        }
+
+
+        loadPlants()
 
         // drawer just closes when apply button is clicked for now
         // clear also just clears the selections for now
@@ -98,53 +149,83 @@ class ViewPlantListActivity: ComponentActivity (){
             binding.filterDrawerLayout.closeDrawer(GravityCompat.START)
         }
 
+    }
 
-
+    // --- PLAY RANDOM SPOTIFY TRACK
+    private fun playRandomSpotify() {
+        val randomTrack = SpotifyTracks.allTracks.random()
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(randomTrack))
+            intent.setPackage("com.spotify.music")
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Spotify app is not installed.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun applyFilters(){
         var filteredList = ArrayList(reminderList)
+
+        // favorites filter
         if (filterBinding.filterFavsCb.isChecked){
             filteredList = ArrayList(filteredList.filter{it.plant.favorite})
         }
+
+        // past due filter
         if (filterBinding.filterPastDueCb.isChecked){
             filteredList = ArrayList(filteredList.filter{it.lastWateredDaysAgo > 0})
         }
+
+        // due today filter
         if (filterBinding.filterWaterTodayCb.isChecked){
             filteredList = ArrayList(filteredList.filter{it.lastWateredDaysAgo == 0})
+        }
+
+        // ADDED: due within next 7 days filter
+        // NOTE: lastWateredDaysAgo is diff = days between nextWaterDate and today
+        // upcoming within 7 days => diff in [-7, 0] ( example: nextWaterDate is within 7 days including today)
+        if (filterBinding.filterWaterWeekCb.isChecked) {
+            filteredList = ArrayList(filteredList.filter { it.lastWateredDaysAgo <= 0 && it.lastWateredDaysAgo >= -7 })
         }
 
         val checkedId = filterBinding.sortRadioGroup.checkedRadioButtonId
 
         if (checkedId != -1) {
-            val checkedBtn = findViewById<RadioButton>(checkedId)
+            val checkedBtn = filterBinding.root.findViewById<RadioButton?>(checkedId)
 
-            when( checkedBtn.text.toString())  {
-                "Alphabetical Ascending" -> filteredList.sortBy {it.plant.plantNickName}
-                "Alphabetical Descending" -> filteredList.sortByDescending {it.plant.plantNickName}
-                "Last Watered" -> filteredList.sortBy {it.lastWateredDaysAgo}
-
+            if (checkedBtn != null) {
+                when (checkedBtn.text.toString()) {
+                    "Alphabetical Ascending" -> filteredList.sortBy { it.plant.plantNickName }
+                    "Alphabetical Descending" -> filteredList.sortByDescending { it.plant.plantNickName }
+                    "Last Watered" -> filteredList.sortBy { it.lastWateredDaysAgo }
+                }
+            } else {
+                Log.e("FILTER", "Sort RadioButton ID not found in layout!")
             }
-
         }
+
 
 
         reminderAdapter.updateData(filteredList)
     }
 
-    override fun onResume(){
+    override fun onResume() {
         super.onResume()
-        val sp: SharedPreferences = this.getSharedPreferences("FLORPAL_FILTEROPTIONS", Context.MODE_PRIVATE)
-        filterBinding.filterFavsCb.isChecked = sp.getBoolean("FLORPAL_FAVORITES", false)
-        filterBinding.filterPastDueCb.isChecked = sp.getBoolean("FLORPAL_PASTDUE", false)
-        filterBinding.filterWaterTodayCb.isChecked = sp.getBoolean("FLORPAL_WATERTODAY", false)
-        filterBinding.filterWaterWeekCb.isChecked = sp.getBoolean("FLORPAL_WATERTHISWEEK", false)
 
-        filterBinding.sortRadioGroup.check(sp.getInt("FLORPAL_RADIOBUTTON", -1))
+        if (!firstOpen) {
+            val sp = getSharedPreferences("FLORPAL_FILTEROPTIONS", MODE_PRIVATE)
+            filterBinding.filterFavsCb.isChecked = sp.getBoolean("FLORPAL_FAVORITES", false)
+            filterBinding.filterPastDueCb.isChecked = sp.getBoolean("FLORPAL_PASTDUE", false)
+            filterBinding.filterWaterTodayCb.isChecked = sp.getBoolean("FLORPAL_WATERTODAY", false)
+            filterBinding.filterWaterWeekCb.isChecked = sp.getBoolean("FLORPAL_WATERTHISWEEK", false)
+            filterBinding.sortRadioGroup.check(sp.getInt("FLORPAL_RADIOBUTTON", -1))
+        }
+
+        firstOpen = false
 
         loadPlants()
-
     }
+
     override fun onPause(){
         super.onPause()
         val sp: SharedPreferences = this.getSharedPreferences("FLORPAL_FILTEROPTIONS", Context.MODE_PRIVATE)
@@ -215,14 +296,35 @@ class ViewPlantListActivity: ComponentActivity (){
             }
 
             reminderList = DataGenerator().generateWaterReminderData(this, plantList)
+
             reminderAdapter.updateData(reminderList)
+
             applyFilters()
+
+
         }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed to get plants. Reason: ${e.toString()}", Toast.LENGTH_SHORT).show()
             }
 
     }
+
+    private fun applyMainFilterCarryOver(filter: String?): ArrayList<WaterReminderModel> {
+
+        var filtered = ArrayList(reminderList)
+
+        when (filter) {
+            "FAV" -> filtered = ArrayList(filtered.filter { it.plant.favorite })
+            "TODAY" -> filtered = ArrayList(filtered.filter { it.lastWateredDaysAgo == 0 })
+            "WEEK" -> filtered = ArrayList(filtered.filter { it.lastWateredDaysAgo in -7..0 })
+            "PAST" -> filtered = ArrayList(filtered.filter { it.lastWateredDaysAgo > 0 })
+            else -> {  }
+        }
+
+        return filtered
+    }
+
+
 
 
 }

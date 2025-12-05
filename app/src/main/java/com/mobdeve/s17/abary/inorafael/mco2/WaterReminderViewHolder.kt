@@ -1,22 +1,17 @@
 package com.mobdeve.s17.abary.inorafael.mco2
 
-
 import android.app.Activity
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
-import java.io.File
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 class WaterReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -25,133 +20,130 @@ class WaterReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     private val tvPlantNickName: TextView = itemView.findViewById(R.id.tvPlantNickName)
     private val tvPlantName: TextView = itemView.findViewById(R.id.tvPlantName)
     private val tvStatus: TextView = itemView.findViewById(R.id.tvStatus)
-
     private val tvHeart: TextView = itemView.findViewById(R.id.tvHeart)
 
-    // added nov 6
     val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
-
-    // added nov 22
     val btnWater: Button = itemView.findViewById(R.id.btnWater)
 
-
-    // edited nov 5
-    // fun bindData(reminder: WaterReminderModel) {
-
-
-    private fun toggleFavorite(plant: PlantModel){
-
-
+    private fun toggleFavorite(plant: PlantModel) {
         val db = FirebaseFirestore.getInstance()
-        val userRef = db.collection(FlorPal_FireStoreRefs.PLANTS_COLLECTION)
-        userRef.document(plant.plant_id!!).update(FlorPal_FireStoreRefs.FAVORITED_FIELD, plant.favorite)
+        db.collection(FlorPal_FireStoreRefs.PLANTS_COLLECTION)
+            .document(plant.plant_id!!)
+            .update(FlorPal_FireStoreRefs.FAVORITED_FIELD, plant.favorite)
     }
 
+    fun bindData(
+        reminder: WaterReminderModel,
+        plantList: ArrayList<PlantModel>,
+        enableClick: Boolean,
+        activity: Activity,
+        onWatered: () -> Unit
+    ) {
 
-    fun bindData(reminder: WaterReminderModel, plantList: ArrayList<PlantModel>, enableClick: Boolean, activity: Activity, onWatered: () -> Unit) {
-
+        // display photo
         if (!reminder.plant.plantPhoto.isNullOrBlank()) {
-            val uri = reminder.plant.plantPhoto.toUri()
-            ivPlantPhoto.setImageURI(uri)
+            ivPlantPhoto.setImageURI(reminder.plant.plantPhoto.toUri())
         }
+
         tvPlantNickName.text = reminder.plant.plantNickName
         tvPlantName.text = reminder.plant.plantName
         tvStatus.text = reminder.statusText
-        tvHeart.text = "\uD83E\uDD0D"
-        if (reminder.plant.favorite)
-            tvHeart.text = "♥"
 
+        tvHeart.text = if (reminder.plant.favorite) "♥" else "\uD83E\uDD0D"
 
-        // Change background color based on reminder card color
-        itemView.setBackgroundColor(reminder.cardColor)
+        itemView.background = itemView.context.getDrawable(R.drawable.round_image_bg)
+        itemView.background.setTint(reminder.cardColor)
 
 
 
         tvHeart.setOnClickListener {
-            // Toggle heart icon ♡ → ♥
             reminder.plant.favorite = !reminder.plant.favorite
-            tvHeart.text = "\uD83E\uDD0D"
-            if (reminder.plant.favorite)
-                tvHeart.text = "♥"
-
+            tvHeart.text = if (reminder.plant.favorite) "♥" else "\uD83E\uDD0D"
             toggleFavorite(reminder.plant)
-
-
         }
 
-        // added nov 6
-        // edit button
+        // Edit button
         btnEdit.setOnClickListener {
-            val matchedPlant = plantList.find {
-                it.plantNickName == reminder.plant.plantNickName
-            }
-            if(matchedPlant != null){
+            val matchedPlant = plantList.find { it.plantNickName == reminder.plant.plantNickName }
+            if (matchedPlant != null) {
                 val intent = Intent(activity, EditPlantActivity::class.java)
                 intent.putExtra("plantModel", matchedPlant)
                 activity.startActivity(intent)
             }
         }
 
-        // added nov 22
+        // Water Button
         btnWater.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
             val plantId = reminder.plant.plant_id ?: return@setOnClickListener
 
             val today = LocalDate.now()
+
             val dateFormatter = java.time.format.DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
                 .appendPattern("MMMM d, yyyy")
                 .toFormatter(Locale.ENGLISH)
 
-            // get freq
             db.collection(FlorPal_FireStoreRefs.PLANTS_COLLECTION)
                 .document(plantId)
                 .get()
                 .addOnSuccessListener { doc ->
+
                     val freq = doc.getLong(FlorPal_FireStoreRefs.WATERING_FREQUENCY_FIELD)?.toInt() ?: 0
                     val nextDate = today.plusDays(freq.toLong())
 
+                    // CHANGED: fixed Firestore update syntax using mapOf
                     db.collection(FlorPal_FireStoreRefs.PLANTS_COLLECTION)
                         .document(plantId)
                         .update(
-                            FlorPal_FireStoreRefs.WATERED_DATE_FIELD,
-                            today.format(dateFormatter),
-                            FlorPal_FireStoreRefs.NEXT_WATER_DATE_FIELD,
-                            nextDate.format(dateFormatter)
+                            mapOf(
+                                FlorPal_FireStoreRefs.WATERED_DATE_FIELD to today.format(dateFormatter),
+                                FlorPal_FireStoreRefs.NEXT_WATER_DATE_FIELD to nextDate.format(dateFormatter)
+                            )
                         )
                         .addOnSuccessListener {
                             Toast.makeText(activity, "Plant watered!", Toast.LENGTH_SHORT).show()
 
+                            // ADDED: update local watered date
                             reminder.plant.wateredDate = CustomDate(
                                 today.month.toString(),
                                 today.dayOfMonth,
                                 today.year
                             )
 
-                            tvStatus.text = "Watered today"
-                            onWatered()
+                            // ADDED: update local nextWateredDate
+                            reminder.plant.nextWateredDate = CustomDate(
+                                nextDate.month.toString(),
+                                nextDate.dayOfMonth,
+                                nextDate.year
+                            )
+
+                            // ADDED: compute updated status
+                            val diff = ChronoUnit.DAYS.between(nextDate, today).toInt()
+                            tvStatus.text = when {
+                                diff > 0 -> "${diff} day(s) overdue"
+                                diff == 0 -> "Water today"
+                                else -> "Water in ${-diff} day(s)"
+                            }
+
+                            onWatered() // refresh list
                         }
                 }
         }
 
-
-
-        // added nov 5
-        // to enable navigating to viewplantdetails activity
-        // when a certain plant is clicked
+        // open details screen when card is clicked
         if (enableClick) {
             itemView.setOnClickListener {
-                val matchedPlant = plantList.find { it.plantNickName == reminder.plant.plantNickName }
+                val matchedPlant =
+                    plantList.find { it.plantNickName == reminder.plant.plantNickName }
                 if (matchedPlant != null) {
                     val intent = Intent(activity, ViewPlantDetailsActivity::class.java)
                     intent.putExtra("plantModel", matchedPlant)
                     activity.startActivity(intent)
-
                 }
             }
         } else {
-            itemView.setOnClickListener(null) // disables click
+            itemView.setOnClickListener(null)
         }
-
     }
 }

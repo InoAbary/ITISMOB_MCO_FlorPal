@@ -261,40 +261,45 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/backBtn"
         style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="150dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="24dp"
         android:backgroundTint="#fee6b0"
-        android:gravity="center"
         android:text="Back"
-        android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="15sp"
         app:cornerRadius="20dp"
         app:icon="@drawable/ic_back"
+        android:textAllCaps="false"
         app:iconGravity="textStart"
         app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/flowerColorLabelTv" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/waterBtn"
+        app:layout_constraintHorizontal_weight="1"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/waterBtn"
         style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="150dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="224dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginBottom="24dp"
         android:backgroundTint="#72c5ee"
-        android:gravity="center"
         android:text="Water"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="15sp"
         app:cornerRadius="20dp"
         app:icon="@drawable/ic_water"
+        app:iconTint="@color/white"
         app:iconGravity="textStart"
         app:iconSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/backBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

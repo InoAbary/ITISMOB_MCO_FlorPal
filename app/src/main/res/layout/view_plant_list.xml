@@ -12,19 +12,34 @@
     android:layout_height="match_parent"
     android:background="#f5f0e2">
 
-    <TextView
-        android:id="@+id/florPalTv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#205935"
-        android:padding="10dp"
-        android:text="FlorPal"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/florPalTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#205935"
+            android:padding="10dp"
+            android:text="FlorPal"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnSpotify"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_music_bg"
+            android:contentDescription="Play Music"
+            android:padding="4dp"
+            android:src="@drawable/ic_music_note"
+            app:layout_constraintBottom_toBottomOf="@id/florPalTv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintTop_toTopOf="@id/florPalTv"
+            app:layout_constraintWidth_default="wrap" />
 
 
     <LinearLayout
